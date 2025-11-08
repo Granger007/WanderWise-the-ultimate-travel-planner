@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+<h4>Book Flight: {{ flight.flight_no }} ({{ flight.airline_name }})</h4>
+<p><strong>From:</strong> {{ flight.dept_airport }} <strong>To:</strong> {{ flight.arr_airport }} <strong>Price:</strong> {{ flight.price }}</p>
+
+<form method="post">
+  
+
+  <div class="mb-3">
+    <label>Trip</label>
+    <div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="trip_choice" id="existing" value="existing" checked>
+        <label class="form-check-label" for="existing">Use existing trip</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="trip_choice" id="newtrip" value="new">
+        <label class="form-check-label" for="newtrip">Create new trip</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-3" id="existingTripDiv">
+    <label>Select existing trip</label>
+    <select name="existing_trip" class="form-select">
+      {% for t in trips %}
+        <option value="{{ t.trip_id }}">{{ t.trip_id }} ({{ t.start_date }} to {{ t.end_date }})</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div id="newTripDiv" style="display:none;">
+    <div class="mb-2">
+      <label>Start date</label>
+      <input type="date" name="start_date" class="form-control"/>
+    </div>
+    <div class="mb-2">
+      <label>End date</label>
+      <input type="date" name="end_date" class="form-control"/>
+    </div>
+    <div class="row g-2">
+      <div class="col-md-6">
+        <label>First name</label>
+        <input type="text" name="F_name" class="form-control"/>
+      </div>
+      <div class="col-md-6">
+        <label>Last name</label>
+        <input type="text" name="L_name" class="form-control"/>
+      </div>
+      <div class="col-md-6">
+        <label>Email</label>
+        <input type="email" name="Gmail" class="form-control"/>
+      </div>
+      <div class="col-md-6">
+        <label>Password</label>
+        <input type="password" name="Password" class="form-control"/>
+      </div>
+      <div class="col-md-6">
+        <label>Phone number</label>
+        <input type="text" name="Phone_number" class="form-control"/>
+      </div>
+      <div class="col-md-6">
+        <label>DOB</label>
+        <input type="date" name="DOB" class="form-control"/>
+      </div>
+      <div class="col-md-6">
+        <label>Passport no</label>
+        <input type="text" name="Passport_no" class="form-control"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label>Passengers</label>
+    <input type="number" name="no_of_guests" min="1" value="1" class="form-control" />
+    <div class="form-text">Flight total will be calculated as passengers × price per person.</div>
+  </div>
+
+  <button class="btn btn-success">Book Flight</button>
+</form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  const existing = document.getElementById("existing");
+  const newtrip = document.getElementById("newtrip");
+  const newDiv = document.getElementById("newTripDiv");
+  const exDiv = document.getElementById("existingTripDiv");
+  function toggle() {
+    if(newtrip.checked) { newDiv.style.display = 'block'; exDiv.style.display='none'; }
+    else { newDiv.style.display = 'none'; exDiv.style.display='block'; }
+  }
+  existing.addEventListener('change', toggle);
+  newtrip.addEventListener('change', toggle);
+});
+</script>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>🌍 WanderWise — User Dashboard</h2>
+  <p class="text-muted">Search for flights and hotels easily.</p>
+
+  <form method="get" action="{{ url_for('search') }}" class="row g-3">
+    <div class="col-md-9">
+      <input class="form-control" name="query" placeholder="Search flight, hotel, or location..." required>
+    </div>
+    <div class="col-md-3">
+      <button class="btn btn-primary w-100">Search</button>
+    </div>
+  </form>
+
+  <hr class="my-4">
+
+  <p>Try searching for destinations like:</p>
+  <a href="{{ url_for('search') }}?query=Paris" class="btn btn-outline-secondary btn-sm">Paris</a>
+  <a href="{{ url_for('search') }}?query=New York" class="btn btn-outline-secondary btn-sm">New York</a>
+  <a href="{{ url_for('search') }}?query=Tokyo" class="btn btn-outline-secondary btn-sm">Tokyo</a>
+</div>
+{% endblock %}

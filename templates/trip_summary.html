@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block content %}
+<h4>Trip Summary for trip {{ trip_id }}</h4>
+{% if summary %}
+  <table class="table">
+    <thead><tr><th>Trip ID</th><th>User</th><th>Start</th><th>End</th><th>Duration (days)</th><th>Total Cost</th><th>#Flights</th><th>#Hotels</th><th>#Activities</th></tr></thead>
+    <tbody>
+      {% for s in summary %}
+      <tr>
+        <td>{{ s.trip_id }}</td>
+        <td>{{ s.user_name }}</td>
+        <td>{{ s.start_date }}</td>
+        <td>{{ s.end_date }}</td>
+        <td>{{ s.duration_days }}</td>
+        <td>{{ s.total_cost }}</td>
+        <td>{{ s.num_flights }}</td>
+        <td>{{ s.num_hotels }}</td>
+        <td>{{ s.num_activities }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="card shadow-sm mb-3">
+    <div class="card-header bg-primary text-white">
+      <h6 class="mb-0">Fare breakdown</h6>
+    </div>
+    <div class="card-body">
+      {% set s = summary[0] %}
+      <div class="row g-3 align-items-center">
+        <div class="col-md-6">
+          <div class="d-flex justify-content-between">
+            <div>
+              <div class="fw-semibold">Flight</div>
+              {% if s.flight_no %}
+                <div class="text-muted small">{{ s.flight_no }} — {{ s.airline_name }} | {{ s.no_of_guests or 1 }} passenger(s)</div>
+              {% else %}
+                <div class="text-muted small">No flight selected</div>
+              {% endif %}
+            </div>
+            <div class="fw-semibold">
+              {% set pax = s.no_of_guests or 1 %}
+              ₹{{ ((s.flight_base_price or 0) * pax) | round(2) }}
+            </div>
+          </div>
+          {% if s.flight_no %}
+          <form class="mt-2" method="post" action="{{ url_for('remove_trip_flight', trip_id=trip_id) }}">
+            <button class="btn btn-outline-danger btn-sm">Remove flight</button>
+          </form>
+          {% endif %}
+        </div>
+        <div class="col-md-6">
+          {% set nights = s.nights or 0 %}
+          {% set hpn = s.price_per_night or 0 %}
+          <div class="d-flex justify-content-between">
+            <div>
+              <div class="fw-semibold">Hotel</div>
+              {% if s.hotel_name %}
+                <div class="text-muted small">{{ s.hotel_name }} — {{ nights }} night(s)</div>
+              {% else %}
+                <div class="text-muted small">No hotel selected</div>
+              {% endif %}
+            </div>
+            <div class="fw-semibold">
+              ₹{{ (nights * hpn) | round(2) }}
+            </div>
+          </div>
+          {% if s.hotel_name %}
+          <form class="mt-2" method="post" action="{{ url_for('remove_trip_hotel', trip_id=trip_id) }}">
+            <button class="btn btn-outline-danger btn-sm">Remove hotel</button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+      <hr>
+      <div class="d-flex justify-content-between">
+        <div class="fw-semibold">Total payable</div>
+        <div class="fw-bold">₹{{ s.total_cost or 0 }}</div>
+      </div>
+      <div class="text-muted small">Note: Total includes activities cost if any were added.</div>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2 mb-3">
+    <a class="btn btn-primary" href="{{ url_for('search', query='') }}">Choose Flight</a>
+    <a class="btn btn-outline-success" href="{{ url_for('search', query='') }}#hotels">Choose Hotel</a>
+  </div>
+
+  {% if triggers and triggers|length > 0 %}
+  <div class="card mt-4 shadow-sm">
+    <div class="card-header bg-warning">
+      <h6 class="mb-0">⚙️ Behind-the-scenes updates to this trip</h6>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-sm align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>When</th>
+              <th>On</th>
+              <th>Name</th>
+              <th>Logic</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t in triggers %}
+            <tr>
+              <td>{{ t.ACTION_TIMING }} {{ t.EVENT_MANIPULATION }}</td>
+              <td><code>{{ t.EVENT_OBJECT_TABLE }}</code></td>
+              <td class="fw-semibold">{{ t.TRIGGER_NAME }}</td>
+              <td style="max-width: 520px;">
+                <details>
+                  <summary class="text-primary" style="cursor:pointer">View logic</summary>
+                  <pre class="mb-0 small">{{ t.ACTION_STATEMENT }}</pre>
+                </details>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+{% else %}
+  <div class="alert alert-info">No summary found for this trip.</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h3>🔍 Search Results for "<strong>{{ query }}</strong>"</h3>
+  <hr>
+
+  {% if flights %}
+  <h4>✈️ Flights</h4>
+  <div class="row">
+    {% for f in flights %}
+    <div class="col-md-6 mb-3">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">{{ f.flight_no }} — {{ f.airline_name }}</h5>
+          <p class="card-text">
+            <strong>From:</strong> {{ f.dept_airport }}<br>
+            <strong>To:</strong> {{ f.arr_airport }}<br>
+            <strong>Price:</strong> ₹{{ f.base_price }}<br>
+            <strong>Duration:</strong> {{ f.flight_duration }}
+          </p>
+          <a href="{{ url_for('book_flight', flight_id=f.flight_id) }}" class="btn btn-primary btn-sm me-2">Book Flight</a>
+          {% if trips %}
+          <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#addFlight{{ f.flight_id }}">Add to Trip</button>
+          <div class="collapse mt-2" id="addFlight{{ f.flight_id }}">
+            <form method="post" action="{{ url_for('book_flight', flight_id=f.flight_id) }}" class="row g-2 align-items-end">
+              <input type="hidden" name="trip_choice" value="existing">
+              <div class="col-md-6">
+                <label class="form-label">Select trip</label>
+                <select name="existing_trip" class="form-select form-select-sm">
+                  {% for t in trips %}
+                  <option value="{{ t.trip_id }}">Trip {{ t.trip_id }} ({{ t.start_date }} to {{ t.end_date }})</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Passengers</label>
+                <input type="number" name="no_of_guests" min="1" value="1" class="form-control form-control-sm" />
+              </div>
+              <div class="col-md-3 text-end">
+                <button class="btn btn-success btn-sm">Add Flight</button>
+              </div>
+            </form>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if hotels %}
+  <h4 class="mt-5">🏨 Hotels</h4>
+  <div class="row">
+    {% for h in hotels %}
+    <div class="col-md-6 mb-3">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">{{ h.hotel_name }}</h5>
+          <p class="card-text">
+            <strong>Address:</strong> {{ h.address }}<br>
+            <strong>Rating:</strong> ⭐ {{ h.rating or 'N/A' }}<br>
+            <strong>Price/Night:</strong> ₹{{ h.price_per_night }}<br>
+            <small>{{ h.amenities }}</small>
+          </p>
+          <a href="{{ url_for('book_hotel', hotel_id=h.hotel_id) }}" class="btn btn-success btn-sm">Book Hotel</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if not flights and not hotels %}
+  <div class="alert alert-warning">No results found for your search.</div>
+  {% endif %}
+</div>
+{% endblock %}
+
+
