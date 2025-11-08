@@ -1,6 +1,7 @@
 # 🧭 WanderWise Setup Guide (Windows)
 
 **WanderWise** is a smart travel planning web application built with Flask and MySQL. 🌍 
+
 It helps users discover destinations, explore activities, view hotels, and organize trips efficiently — all from a single, user-friendly dashboard.
 
 This guide will help you fully set up and run the **WanderWise Flask application** on a Windows system using either **Command Prompt** or **PowerShell**.
