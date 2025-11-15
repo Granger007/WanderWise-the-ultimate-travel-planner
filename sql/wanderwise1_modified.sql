@@ -287,13 +287,26 @@ BEGIN
     END IF;
 END//
 
--- FUNCTION: Calculate Age
-CREATE FUNCTION calculate_age(dob DATE)
+-- -- FUNCTION: Calculate Age
+-- CREATE FUNCTION calculate_age(dob DATE)
+-- RETURNS INT
+-- DETERMINISTIC
+-- BEGIN
+--     RETURN TIMESTAMPDIFF(YEAR, dob, CURDATE());
+-- END//
+
+-- FUNCTION: Calculate trip duration
+DELIMITER $$
+
+CREATE FUNCTION calculate_nights(check_in DATE, check_out DATE)
 RETURNS INT
 DETERMINISTIC
 BEGIN
-    RETURN TIMESTAMPDIFF(YEAR, dob, CURDATE());
-END//
+    RETURN DATEDIFF(check_out, check_in);
+END $$
+
+DELIMITER ;
+
 
 -- PROCEDURE: Get Trip Summary
 CREATE PROCEDURE get_trip_summary(IN p_trip_id INT)
@@ -318,3 +331,127 @@ BEGIN
 END//
 
 DELIMITER ;
+
+
+-- POPULATE ADMIN FLIGHT DATA
+
+-- INSERT INTO Flight (flight_no, airline_name, dept_airport, arr_airport, base_price, flight_duration, status)
+-- VALUES
+-- -- 1. To Cape Town
+-- ('BA059', 'British Airways', 'London Heathrow (LHR)', 'Cape Town International (CPT)', 950.00, '11:30:00', 'Scheduled'),
+
+-- -- 2. To Vancouver
+-- ('AC855', 'Air Canada', 'London Heathrow (LHR)', 'Vancouver International (YVR)', 780.00, '09:45:00', 'Scheduled'),
+
+-- -- 3. To London
+-- ('UA901', 'United Airlines', 'San Francisco International (SFO)', 'London Heathrow (LHR)', 890.00, '10:30:00', 'Scheduled'),
+
+-- -- 4. To Los Angeles
+-- ('DL405', 'Delta Air Lines', 'New York JFK (JFK)', 'Los Angeles International (LAX)', 320.00, '06:15:00', 'Scheduled'),
+
+-- -- 5. To Dubai
+-- ('EK202', 'Emirates', 'New York JFK (JFK)', 'Dubai International (DXB)', 1100.00, '12:45:00', 'Scheduled'),
+
+-- -- 6. To Singapore
+-- ('SQ317', 'Singapore Airlines', 'London Heathrow (LHR)', 'Singapore Changi (SIN)', 1050.00, '13:15:00', 'Scheduled'),
+
+-- -- 7. To Bangkok
+-- ('TG911', 'Thai Airways', 'London Heathrow (LHR)', 'Suvarnabhumi Airport (BKK)', 960.00, '11:50:00', 'Scheduled'),
+
+-- -- 8. To Hong Kong
+-- ('CX255', 'Cathay Pacific', 'London Heathrow (LHR)', 'Hong Kong International (HKG)', 980.00, '11:45:00', 'Scheduled'),
+
+-- -- 9. To Barcelona
+-- ('IB3159', 'Iberia', 'Madrid-Barajas (MAD)', 'Barcelona El Prat (BCN)', 120.00, '01:10:00', 'Scheduled'),
+
+-- -- 10. To Istanbul
+-- ('TK1980', 'Turkish Airlines', 'London Heathrow (LHR)', 'Istanbul Airport (IST)', 350.00, '03:50:00', 'Scheduled'),
+
+-- -- 11. To Rio de Janeiro
+-- ('LA8065', 'LATAM Airlines', 'São Paulo Guarulhos (GRU)', 'Rio de Janeiro-Galeão (GIG)', 180.00, '01:05:00', 'Scheduled'),
+
+-- -- 12. To Cairo
+-- ('MS778', 'EgyptAir', 'London Heathrow (LHR)', 'Cairo International (CAI)', 540.00, '05:15:00', 'Scheduled'),
+
+-- -- 13. To Venice
+-- ('AZ146', 'ITA Airways', 'Rome Fiumicino (FCO)', 'Venice Marco Polo (VCE)', 110.00, '01:00:00', 'Scheduled'),
+
+-- -- 14. To San Francisco
+-- ('AA177', 'American Airlines', 'New York JFK (JFK)', 'San Francisco International (SFO)', 340.00, '06:20:00', 'Scheduled'),
+
+-- -- 15. To Athens
+-- ('A3805', 'Aegean Airlines', 'London Heathrow (LHR)', 'Athens International (ATH)', 300.00, '03:40:00', 'Scheduled'),
+
+-- -- 16. To Amsterdam
+-- ('KL1006', 'KLM Royal Dutch Airlines', 'London Heathrow (LHR)', 'Amsterdam Schiphol (AMS)', 140.00, '01:15:00', 'Scheduled'),
+
+-- -- 17. To Las Vegas
+-- ('WN2378', 'Southwest Airlines', 'Los Angeles International (LAX)', 'McCarran International (LAS)', 95.00, '01:10:00', 'Scheduled'),
+
+-- -- 18. To Buenos Aires
+-- ('AR1301', 'Aerolíneas Argentinas', 'Miami International (MIA)', 'Buenos Aires Ezeiza (EZE)', 720.00, '09:00:00', 'Scheduled'),
+
+-- -- 19. To Reykjavik
+-- ('FI455', 'Icelandair', 'London Heathrow (LHR)', 'Keflavik International (KEF)', 280.00, '03:00:00', 'Scheduled'),
+
+-- -- 20. To Lisbon
+-- ('TP1337', 'TAP Air Portugal', 'London Heathrow (LHR)', 'Lisbon Humberto Delgado (LIS)', 190.00, '02:45:00', 'Scheduled');
+
+
+
+--POPULATE ADMIN HOTEL DATA
+-- INSERT INTO Hotel (hotel_name, location_id, address, rating, std_google_review, amenities, price_per_night) VALUES
+-- ('The Ritz London', 3, '150 Piccadilly, St. James\'s, London W1J 9BR, United Kingdom', 4.8, 'Elegant and luxurious hotel offering top-class dining and impeccable service in the heart of London.', 'Free WiFi, Spa, Fine Dining, Concierge, Fitness Center, Bar', 850.00),
+
+-- ('Beverly Hills Hotel', 4, '9641 Sunset Blvd, Beverly Hills, CA 90210, United States', 4.7, 'Iconic “Pink Palace” known for luxury suites, palm gardens, and celebrity history.', 'Pool, Spa, Restaurant, Valet Parking, Pet Friendly, Bar', 950.00),
+
+-- ('Burj Al Arab Jumeirah', 5, 'Jumeirah St - Dubai, United Arab Emirates', 4.8, 'World-famous sail-shaped hotel offering unparalleled luxury and service.', 'Private Beach, Butler Service, Spa, Pool, Helipad, Restaurant', 1800.00),
+
+-- ('Marina Bay Sands', 6, '10 Bayfront Ave, Singapore 018956', 4.6, 'Famous for its rooftop infinity pool and panoramic city views.', 'Infinity Pool, Casino, Restaurants, Gym, Spa, Shopping Mall', 600.00),
+
+-- ('Mandarin Oriental Bangkok', 7, '48 Oriental Ave, Bang Rak, Bangkok 10500, Thailand', 4.8, 'Historic riverside hotel offering elegant suites and legendary Thai hospitality.', 'Spa, Pool, Riverside Dining, Fitness Center, Bar', 500.00),
+
+-- ('The Peninsula Hong Kong', 8, 'Salisbury Road, Tsim Sha Tsui, Kowloon, Hong Kong', 4.7, 'Classic luxury hotel offering Rolls-Royce transfers and harbor views.', 'Spa, Indoor Pool, Afternoon Tea, Fitness Center, Limousine Service', 750.00),
+
+-- ('Hotel Arts Barcelona', 9, 'Carrer de la Marina, 19–21, 08005 Barcelona, Spain', 4.6, 'Modern beachfront hotel known for sea views and exceptional dining.', 'Pool, Spa, Restaurant, Gym, Sea View Rooms, Bar', 550.00),
+
+-- ('Four Seasons Istanbul at the Bosphorus', 10, 'Çırağan Cd. No:28, Beşiktaş, İstanbul, Türkiye', 4.9, 'Palatial hotel along the Bosphorus with Ottoman-inspired design.', 'Spa, Waterfront Dining, Pool, Gym, Bar, Concierge', 700.00),
+
+-- ('Copacabana Palace', 11, 'Avenida Atlântica, 1702 - Copacabana, Rio de Janeiro, Brazil', 4.8, 'Historic beachfront hotel symbolizing Rio’s glamour and elegance.', 'Beach Access, Pool, Spa, Restaurants, Bar, Fitness Center', 650.00),
+
+-- ('The Nile Ritz-Carlton', 12, '1113 Corniche El Nil, Cairo, Egypt', 4.7, 'Luxury hotel overlooking the Nile with exceptional dining and service.', 'Pool, Spa, Restaurant, Bar, Gym, Business Center', 400.00),
+
+-- ('The Gritti Palace', 13, 'Campo Santa Maria del Giglio, 2467, 30124 Venezia VE, Italy', 4.8, 'Venetian palace turned hotel offering grand canal views and timeless luxury.', 'Restaurant, Bar, Spa, Butler Service, Pet Friendly', 900.00),
+
+-- ('Fairmont San Francisco', 14, '950 Mason St, San Francisco, CA 94108, United States', 4.6, 'Historic Nob Hill hotel offering panoramic city and bay views.', 'Spa, Gym, Bar, Conference Rooms, Concierge', 500.00),
+
+-- ('Hotel Grande Bretagne', 15, '1 Vasileos Georgiou A, Syntagma Square, Athens 105 64, Greece', 4.8, 'Athenian landmark with views of the Acropolis and exceptional service.', 'Spa, Rooftop Pool, Restaurant, Bar, Gym', 550.00),
+
+-- ('W Amsterdam', 16, 'Spuistraat 175, 1012 VN Amsterdam, Netherlands', 4.4, 'Trendy and modern hotel offering rooftop views and contemporary design.', 'Rooftop Pool, Bar, Gym, Spa, Pet Friendly', 450.00),
+
+-- ('Bellagio Hotel & Casino', 17, '3600 Las Vegas Blvd S, Las Vegas, NV 89109, United States', 4.7, 'World-renowned Las Vegas resort known for its fountain show and luxury casino.', 'Casino, Pool, Spa, Fine Dining, Entertainment, Bar', 600.00);
+
+
+
+--POPULATE ADMIN LOCATION DATA 
+-- INSERT INTO Location (city_name, country_name, region_state, latitude, longitude, timezone, currency, activities) VALUES
+-- ('Cape Town', 'South Africa', 'Western Cape', -33.9249, 18.4241, 'UTC+2', 'ZAR', 'Table Mountain hiking, Cape Point tour, Robben Island visit, wine tasting in Stellenbosch'),
+-- ('Vancouver', 'Canada', 'British Columbia', 49.2827, -123.1207, 'UTC-8 (Pacific Time)', 'CAD', 'Stanley Park cycling, Grouse Mountain, Granville Island, whale watching'),
+-- ('London', 'United Kingdom', 'England', 51.5074, -0.1278, 'UTC+0', 'GBP', 'Buckingham Palace, London Eye, Tower of London, Big Ben'),
+-- ('Los Angeles', 'United States', 'California', 34.0522, -118.2437, 'UTC-8 (Pacific Time)', 'USD', 'Hollywood, Santa Monica Pier, Universal Studios, Beverly Hills'),
+-- ('Dubai', 'United Arab Emirates', 'Dubai Emirate', 25.276987, 55.296249, 'UTC+4', 'AED', 'Burj Khalifa, Desert Safari, Dubai Mall, Palm Jumeirah'),
+-- ('Singapore', 'Singapore', NULL, 1.3521, 103.8198, 'UTC+8', 'SGD', 'Marina Bay Sands, Gardens by the Bay, Sentosa Island, Orchard Road'),
+-- ('Bangkok', 'Thailand', 'Bangkok Metropolitan Region', 13.7563, 100.5018, 'UTC+7', 'THB', 'Grand Palace, Floating Markets, Wat Arun, street food tours'),
+-- ('Hong Kong', 'China (Special Administrative Region)', NULL, 22.3193, 114.1694, 'UTC+8', 'HKD', 'Victoria Peak, Disneyland, Avenue of Stars, Star Ferry'),
+-- ('Barcelona', 'Spain', 'Catalonia', 41.3851, 2.1734, 'UTC+1', 'EUR', 'Sagrada Família, Park Güell, La Rambla, beach walks'),
+-- ('Istanbul', 'Turkey', 'Marmara Region', 41.0082, 28.9784, 'UTC+3', 'TRY', 'Hagia Sophia, Blue Mosque, Grand Bazaar, Bosphorus cruise'),
+-- ('Rio de Janeiro', 'Brazil', 'Rio de Janeiro', -22.9068, -43.1729, 'UTC-3', 'BRL', 'Christ the Redeemer, Copacabana Beach, Sugarloaf Mountain, Carnival'),
+-- ('Cairo', 'Egypt', 'Cairo Governorate', 30.0444, 31.2357, 'UTC+2', 'EGP', 'Pyramids of Giza, Egyptian Museum, Nile River cruise, Khan el-Khalili bazaar'),
+-- ('Venice', 'Italy', 'Veneto', 45.4408, 12.3155, 'UTC+1', 'EUR', 'Gondola rides, St. Mark’s Square, Doge’s Palace, Rialto Bridge'),
+-- ('San Francisco', 'United States', 'California', 37.7749, -122.4194, 'UTC-8 (Pacific Time)', 'USD', 'Golden Gate Bridge, Alcatraz Island, cable cars, Fisherman’s Wharf'),
+-- ('Athens', 'Greece', 'Attica', 37.9838, 23.7275, 'UTC+2', 'EUR', 'Acropolis, Parthenon, Plaka district, ancient ruins'),
+-- ('Amsterdam', 'Netherlands', 'North Holland', 52.3676, 4.9041, 'UTC+1', 'EUR', 'Canal cruises, Anne Frank House, Van Gogh Museum, cycling tours'),
+-- ('Las Vegas', 'United States', 'Nevada', 36.1699, -115.1398, 'UTC-8 (Pacific Time)', 'USD', 'Casinos, live shows, The Strip, Grand Canyon day trips'),
+-- ('Buenos Aires', 'Argentina', 'Buenos Aires Autonomous City', -34.6037, -58.3816, 'UTC-3', 'ARS', 'Tango shows, Recoleta Cemetery, San Telmo market, steakhouse dining'),
+-- ('Reykjavik', 'Iceland', 'Capital Region', 64.1355, -21.8954, 'UTC+0', 'ISK', 'Northern Lights watching, Blue Lagoon, whale watching, Golden Circle tour'),
+-- ('Lisbon', 'Portugal', 'Lisbon District', 38.7169, -9.1399, 'UTC+0', 'EUR', 'Tram 28 ride, Alfama district tour, Belem Tower, Fado music nights');
